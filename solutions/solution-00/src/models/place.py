@@ -5,22 +5,23 @@ Place related functionality
 from src.models.base import Base
 from src.models.city import City
 from src.models.user import User
+from src import db
 
 
 class Place(Base):
     """Place representation"""
 
-    name: str
-    description: str
-    address: str
-    latitude: float
-    longitude: float
-    host_id: str
-    city_id: str
-    price_per_night: int
-    number_of_rooms: int
-    number_of_bathrooms: int
-    max_guests: int
+    name = db.Column(db.String(36), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    address = db.Column(db.String(200), nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    host_id = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
+    city_id = db.Column(db.String(36), db.ForeignKey('city.id'), nullable=False)
+    price_per_night = db.Column(db.int, nullable=False)
+    number_of_rooms = db.Column(db.int, nullable=False)
+    number_of_bathrooms = db.Column(db.integer, nullable=False)
+    max_guests = db.Column(db.integer, nullable=False)
 
     def __init__(self, data: dict | None = None, **kw) -> None:
         """Dummy init"""

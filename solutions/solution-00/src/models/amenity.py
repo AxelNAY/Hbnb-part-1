@@ -3,12 +3,13 @@ Amenity related functionality
 """
 
 from src.models.base import Base
+from src import db
 
 
 class Amenity(Base):
     """Amenity representation"""
 
-    name: str
+    name = db.Column(db.String(36), nullable=False)
 
     def __init__(self, name: str, **kw) -> None:
         """Dummy init"""

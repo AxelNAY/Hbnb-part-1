@@ -5,15 +5,16 @@ Review related functionality
 from src.models.base import Base
 from src.models.place import Place
 from src.models.user import User
+from src import db
 
 
 class Review(Base):
     """Review representation"""
 
-    place_id: str
-    user_id: str
-    comment: str
-    rating: float
+    place_id = db.Column(db.String(36), primary_key=True)
+    user_id = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
+    comment = db.Column(db.String(36), nullable=True)
+    rating = db.Column(db.Float, nullable=False)
 
     def __init__(
         self, place_id: str, user_id: str, comment: str, rating: float, **kw

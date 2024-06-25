@@ -2,6 +2,8 @@
 Country related functionality
 """
 
+from src import db
+
 
 class Country:
     """
@@ -12,9 +14,9 @@ class Country:
     This class is used to get and list countries
     """
 
-    name: str
-    code: str
-    cities: list
+    name = db.Column(db.String(56), nullable=False)
+    code = db.Column(db.String(36), nullable=False)
+    cities = db.Column(db.String(58), nullable=False)
 
     def __init__(self, name: str, code: str, **kw) -> None:
         """Dummy init"""

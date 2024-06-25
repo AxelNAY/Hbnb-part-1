@@ -2,9 +2,11 @@
 
 from flask import Flask
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+
 
 cors = CORS()
-
+db = SQLAlchemy()
 
 def create_app(config_class="src.config.DevelopmentConfig") -> Flask:
     """
@@ -15,6 +17,8 @@ def create_app(config_class="src.config.DevelopmentConfig") -> Flask:
     app.url_map.strict_slashes = False
 
     app.config.from_object(config_class)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///development.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     register_extensions(app)
     register_routes(app)
@@ -22,12 +26,10 @@ def create_app(config_class="src.config.DevelopmentConfig") -> Flask:
 
     return app
 
-
 def register_extensions(app: Flask) -> None:
     """Register the extensions for the Flask app"""
     cors.init_app(app, resources={r"/api/*": {"origins": "*"}})
-    # Further extensions can be added here
-
+    db.init_app(app)
 
 def register_routes(app: Flask) -> None:
     """Import and register the routes for the Flask app"""
@@ -47,7 +49,6 @@ def register_routes(app: Flask) -> None:
     app.register_blueprint(places_bp)
     app.register_blueprint(reviews_bp)
     app.register_blueprint(amenities_bp)
-
 
 def register_handlers(app: Flask) -> None:
     """Register the error handlers for the Flask app."""
