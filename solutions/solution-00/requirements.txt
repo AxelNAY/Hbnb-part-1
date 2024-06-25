@@ -1,5 +1,5 @@
 flask
 flask-cors
 gunicorn
-SQLAlchemy
-Flask-SQLAlchemy
+SQLAlchemy===2.0.15
+Flask-SQLAlchemy==3.0.4
