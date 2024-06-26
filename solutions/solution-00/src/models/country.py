@@ -14,9 +14,12 @@ class Country:
     This class is used to get and list countries
     """
 
+    id = db.Column(db.String(36), primary_key=True)
     name = db.Column(db.String(56), nullable=False)
     code = db.Column(db.String(36), nullable=False)
     cities = db.Column(db.String(58), nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    updated_at = db.Column(db.DateTime, onupdate=db.func.current_timestamp())
 
     def __init__(self, name: str, code: str, **kw) -> None:
         """Dummy init"""

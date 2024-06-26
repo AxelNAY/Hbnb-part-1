@@ -15,6 +15,8 @@ class Review(Base):
     user_id = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
     comment = db.Column(db.String(36), nullable=True)
     rating = db.Column(db.Float, nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    updated_at = db.Column(db.DateTime, onupdate=db.func.current_timestamp())
 
     def __init__(
         self, place_id: str, user_id: str, comment: str, rating: float, **kw
