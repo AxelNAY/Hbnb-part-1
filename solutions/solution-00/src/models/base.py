@@ -12,6 +12,8 @@ class Base(ABC):
     Base Interface for all models
     """
 
+    __tablename__ = 'base'
+
     id = db.Column(db.String(36), primary_key=True, unique=True, nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, onupdate=db.func.current_timestamp())

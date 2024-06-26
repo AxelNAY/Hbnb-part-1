@@ -14,6 +14,8 @@ class Country:
     This class is used to get and list countries
     """
 
+    __tablename__ = 'contry'
+
     id = db.Column(db.String(36), primary_key=True)
     name = db.Column(db.String(56), nullable=False)
     code = db.Column(db.String(36), nullable=False)

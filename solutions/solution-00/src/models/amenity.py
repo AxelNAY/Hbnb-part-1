@@ -9,6 +9,8 @@ from src import db
 class Amenity(Base):
     """Amenity representation"""
 
+    __tablename__ = 'amenity'
+
     id = db.Column(db.String(36), primary_key=True)
     name = db.Column(db.String(36), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())

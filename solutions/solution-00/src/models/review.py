@@ -11,6 +11,8 @@ from src import db
 class Review(Base):
     """Review representation"""
 
+    __tablename__ = 'review'
+
     place_id = db.Column(db.String(36), primary_key=True)
     user_id = db.Column(db.String(36), db.ForeignKey('user.id'), nullable=False)
     comment = db.Column(db.String(36), nullable=True)

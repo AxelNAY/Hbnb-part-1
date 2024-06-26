@@ -11,6 +11,8 @@ from src import db
 class Place(Base):
     """Place representation"""
 
+    __tablename__ = 'place'
+
     id = db.Column(db.String(36), primary_key=True)
     name = db.Column(db.String(36), nullable=False)
     description = db.Column(db.Text, nullable=False)
