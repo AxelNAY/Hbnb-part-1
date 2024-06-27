@@ -1,16 +1,18 @@
 """
 City related functionality
 """
-
+from datetime import datetime
 from src.models.base import Base
 from src.models.country import Country
-
+from app import db
 
 class City(Base):
     """City representation"""
 
-    name: str
-    country_code: str
+    __tablename__ = "cities"
+
+    name = db.Column(db.String(255), nullable=False)
+    country_code = db.Column(db.String(2), nullable=False)
 
     def __init__(self, name: str, country_code: str, **kw) -> None:
         """Dummy init"""

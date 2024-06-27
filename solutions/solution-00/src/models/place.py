@@ -1,29 +1,33 @@
 """
 Place related functionality
 """
+from app import db
+from datetime import datetime
+from models.city import City
+from models.user import User
 
-from src.models.base import Base
-from src.models.city import City
-from src.models.user import User
-
-
-class Place(Base):
+class Place(db.Model):
     """Place representation"""
 
-    name: str
-    description: str
-    address: str
-    latitude: float
-    longitude: float
-    host_id: str
-    city_id: str
-    price_per_night: int
-    number_of_rooms: int
-    number_of_bathrooms: int
-    max_guests: int
+    __tablename__ = 'places'
+    
+    id = db.Column(db.String(36), primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    address = db.Column(db.String(200), nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    host_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+    city_id = db.Column(db.String(36), db.ForeignKey('cities.id'), nullable=False)
+    price_per_night = db.Column(db.Integer, nullable=False)
+    number_of_rooms = db.Column(db.Integer, nullable=False)
+    number_of_bathrooms = db.Column(db.Integer, nullable=False)
+    max_guests = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    def __init__(self, data: dict | None = None, **kw) -> None:
-        """Dummy init"""
+    def __init__(self, data: dict = None, **kw) -> None:
+        """Initialize a place"""
         super().__init__(**kw)
 
         if not data:
@@ -42,7 +46,7 @@ class Place(Base):
         self.max_guests = int(data.get("max_guests", 0))
 
     def __repr__(self) -> str:
-        """Dummy repr"""
+        """String representation"""
         return f"<Place {self.id} ({self.name})>"
 
     def to_dict(self) -> dict:
@@ -67,14 +71,14 @@ class Place(Base):
     @staticmethod
     def create(data: dict) -> "Place":
         """Create a new place"""
-        from src.persistence import repo
+        from persistence import repo
 
-        user: User | None = User.get(data["host_id"])
+        user: User | None = User.query.get(data["host_id"])
 
         if not user:
             raise ValueError(f"User with ID {data['host_id']} not found")
 
-        city: City | None = City.get(data["city_id"])
+        city: City | None = City.query.get(data["city_id"])
 
         if not city:
             raise ValueError(f"City with ID {data['city_id']} not found")
@@ -88,9 +92,9 @@ class Place(Base):
     @staticmethod
     def update(place_id: str, data: dict) -> "Place | None":
         """Update an existing place"""
-        from src.persistence import repo
+        from persistence import repo
 
-        place: Place | None = Place.get(place_id)
+        place: Place | None = Place.query.get(place_id)
 
         if not place:
             return None

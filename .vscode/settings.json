@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./solutions/solution-00/src"
+    ]
+}

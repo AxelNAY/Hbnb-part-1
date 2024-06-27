@@ -2,8 +2,9 @@
 Country related functionality
 """
 
+from app import db
 
-class Country:
+class Country(db.Model):
     """
     Country representation
 
@@ -12,18 +13,19 @@ class Country:
     This class is used to get and list countries
     """
 
-    name: str
-    code: str
-    cities: list
+    __tablename__ = 'countries'
+    
+    code = db.Column(db.String(3), primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
 
     def __init__(self, name: str, code: str, **kw) -> None:
-        """Dummy init"""
+        """Initialize a country"""
         super().__init__(**kw)
         self.name = name
         self.code = code
 
     def __repr__(self) -> str:
-        """Dummy repr"""
+        """String representation"""
         return f"<Country {self.code} ({self.name})>"
 
     def to_dict(self) -> dict:
@@ -36,27 +38,17 @@ class Country:
     @staticmethod
     def get_all() -> list["Country"]:
         """Get all countries"""
-        from src.persistence import repo
-
-        countries: list["Country"] = repo.get_all("country")
-
-        return countries
+        return Country.query.all()
 
     @staticmethod
     def get(code: str) -> "Country | None":
         """Get a country by its code"""
-        for country in Country.get_all():
-            if country.code == code:
-                return country
-        return None
+        return Country.query.get(code)
 
     @staticmethod
     def create(name: str, code: str) -> "Country":
         """Create a new country"""
-        from src.persistence import repo
-
-        country = Country(name, code)
-
-        repo.save(country)
-
-        return country
+        new_country = Country(name=name, code=code)
+        db.session.add(new_country)
+        db.session.commit()
+        return new_country
