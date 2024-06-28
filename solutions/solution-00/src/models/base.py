@@ -12,7 +12,7 @@ class Base(ABC):
     Base Interface for all models
     """
 
-    __tablename__ = 'base'
+    __abstract__ = True
 
     id = db.Column(db.String(36), primary_key=True, unique=True, nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
