@@ -21,6 +21,7 @@ class Config(ABC):
     TESTING = False
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
 
 
 class DevelopmentConfig(Config):
@@ -80,3 +81,9 @@ class ProductionConfig(Config):
         "DATABASE_URL",
         "postgresql://user:password@localhost/hbnb_prod"
     )
+
+def get_config():
+    env = os.getenv('ENV', 'development')
+    if env == 'production':
+        return ProductionConfig
+    return DevelopmentConfig
