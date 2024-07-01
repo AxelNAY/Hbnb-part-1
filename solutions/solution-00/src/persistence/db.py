@@ -20,11 +20,10 @@ class DBRepository(Repository):
     """Dummy DB repository"""
 
     def __init__(self) -> None:
-        """Not implemented"""
+        self.reload()
 
     def get_all(self, model_name: str) -> list:
-        """Not implemented"""
-        return []
+        return self.model_name
 
     def get(self, model_name: str, obj_id: str) -> Base | None:
         """Not implemented"""
