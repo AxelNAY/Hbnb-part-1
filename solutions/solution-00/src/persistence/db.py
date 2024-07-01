@@ -25,7 +25,9 @@ class DBRepository(Repository):
 
     def get_all(self, model_name: str) -> list:
         model_class = self._get_model_class(model_name)
-        return self.session.query(model_class).all()
+        if model_class:
+            return self.session.query(model_class).all()
+        return []
 
     def get(self, model_name: str, obj_id: str) -> Base | None:
         model_class = self._get_model_class(model_name)
