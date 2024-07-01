@@ -21,7 +21,6 @@ class DBRepository(Repository):
     """Dummy DB repository"""
 
     def __init__(self) -> None:
-<<<<<<< HEAD
         self.session = db.session
 
     def get_all(self, model_name: str) -> list:
@@ -29,12 +28,6 @@ class DBRepository(Repository):
         if model_class:
             return self.session.query(model_class).all()
         return []
-=======
-        self.reload()
-
-    def get_all(self, model_name: str) -> list:
-        return self.model_name
->>>>>>> axel
 
     def get(self, model_name: str, obj_id: str) -> Base | None:
         model_class = self._get_model_class(model_name)
