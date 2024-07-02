@@ -34,15 +34,13 @@ class DBRepository(Repository):
         return self.session.query(model_class).get(obj_id)
 
     def reload(self) -> None:
-        db.session.reload()
-        db.session.commit()
+        pass
 
     def save(self, obj: Base) -> None:
-        db.session.save(obj)
+        db.session.add(obj)
         db.session.commit()
 
     def update(self, obj: Base) -> Base | None:
-        db.session.update(obj)
         db.session.commit()
 
     def delete(self, obj: Base) -> bool:
