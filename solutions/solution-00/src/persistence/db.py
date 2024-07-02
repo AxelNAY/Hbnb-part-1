@@ -46,4 +46,4 @@ class DBRepository(Repository):
     def delete(self, obj: Base) -> bool:
         db.session.delete(obj)
         db.session.commit()
-        return False
+        return True
