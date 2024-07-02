@@ -1,22 +1,43 @@
-""" Abstract base class for all models """
-
 from datetime import datetime
-from typing import Any, Optional
+from typing import Optional
 import uuid
 from abc import ABC, abstractmethod
+from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy import Column, String, DateTime, func
 from src import db
 
-
-class Base(ABC):
+class BaseMixin(ABC):
     """
     Base Interface for all models
     """
 
-    __tablename__ = 'base'
+    @abstractmethod
+    def to_dict(self) -> dict:
+        """Returns the dictionary representation of the object"""
 
-    id = db.Column(db.String(36), primary_key=True, unique=True, nullable=False)
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.current_timestamp())
+    @staticmethod
+    @abstractmethod
+    def create(data: dict) -> 'BaseMixin':
+        """Creates a new object of the class"""
+
+    @staticmethod
+    @abstractmethod
+    def update(entity_id: str, data: dict) -> 'BaseMixin' or None:
+        """Updates an object of the class"""
+
+
+class Base:
+    """
+    Base class for common model functionality
+    """
+
+    id = Column(String(36), primary_key=True, unique=True, nullable=False)
+    created_at = Column(DateTime, default=func.current_timestamp())
+    updated_at = Column(DateTime, onupdate=func.current_timestamp())
+
+    @declared_attr
+    def __tablename__(cls) -> str:
+        return cls.__name__.lower()
 
     def __init__(
         self,
@@ -29,21 +50,15 @@ class Base(ABC):
         Base class constructor
         If kwargs are provided, set them as attributes
         """
-
-        if kwargs:
-            for key, value in kwargs.items():
-                if hasattr(self, key):
-                    continue
-                setattr(self, key, value)
-
+        super().__init__(**kwargs)
         self.id = str(id or uuid.uuid4())
         self.created_at = created_at or datetime.now()
         self.updated_at = updated_at or datetime.now()
 
     @classmethod
-    def get(cls, id) -> "Any | None":
+    def get(cls, id) -> 'Base' or None:
         """
-        This is a common method to get an specific object
+        This is a common method to get a specific object
         of a class by its id
 
         If a class needs a different implementation,
@@ -54,7 +69,7 @@ class Base(ABC):
         return repo.get(cls.__name__.lower(), id)
 
     @classmethod
-    def get_all(cls) -> list["Any"]:
+    def get_all(cls) -> list['Base']:
         """
         This is a common method to get all objects of a class
 
@@ -68,7 +83,7 @@ class Base(ABC):
     @classmethod
     def delete(cls, id) -> bool:
         """
-        This is a common method to delete an specific
+        This is a common method to delete a specific
         object of a class by its id
 
         If a class needs a different implementation,
@@ -82,17 +97,3 @@ class Base(ABC):
             return False
 
         return repo.delete(obj)
-
-    @abstractmethod
-    def to_dict(self) -> dict:
-        """Returns the dictionary representation of the object"""
-
-    @staticmethod
-    @abstractmethod
-    def create(data: dict) -> Any:
-        """Creates a new object of the class"""
-
-    @staticmethod
-    @abstractmethod
-    def update(entity_id: str, data: dict) -> Any | None:
-        """Updates an object of the class"""

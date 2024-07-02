@@ -1,17 +1,9 @@
-"""
-User related functionality
-"""
-
-from src.models.base import Base
+from src.models.base import Base, BaseMixin
 from src import db
 
-
-class User(Base, db.Model):
+class User(Base):
     """User representation"""
 
-    __tablename__ = 'users'
-
-    id = db.Column(db.String(36), primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
     first_name = db.Column(db.String(50), nullable=False)
@@ -21,7 +13,7 @@ class User(Base, db.Model):
     updated_at = db.Column(db.DateTime, onupdate=db.func.current_timestamp())
 
     def __init__(self, email: str, password: str, first_name: str, last_name: str, is_admin: bool = False, **kw):
-        """Dummy init"""
+        """User constructor"""
         super().__init__(**kw)
         self.email = email
         self.password = password
@@ -30,7 +22,7 @@ class User(Base, db.Model):
         self.is_admin = is_admin
 
     def __repr__(self) -> str:
-        """Dummy repr"""
+        """String representation"""
         return f"<User {self.id} ({self.email})>"
 
     def to_dict(self) -> dict:
