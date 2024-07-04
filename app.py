@@ -1,10 +1,13 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager
+from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///development.db'
 db = SQLAlchemy(app)
-
+jwt = JWTManager(app)
+bcrypt = Bcrypt(app)
 
 from models.user import User
 from models.city import City
