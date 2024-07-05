@@ -2,20 +2,23 @@
 This module contains the routes for the users endpoints.
 """
 
-from flask import Blueprint
-from src.controllers.users import (
-    create_user,
-    delete_user,
-    get_user_by_id,
-    get_users,
-    update_user,
-)
+from flask import Blueprint, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.models import User
 
-users_bp = Blueprint("users", __name__, url_prefix="/users")
+bp = Blueprint('users', __name__, url_prefix='/users')
 
-users_bp.route("/", methods=["GET"])(get_users)
-users_bp.route("/", methods=["POST"])(create_user)
+@bp.route('/profile', methods=['GET'])
+@jwt_required()
+def profile():
+    current_user = get_jwt_identity()
+    user = User.query.filter_by(email=current_user['email']).first()
+    return jsonify(user.to_dict()), 200
 
-users_bp.route("/<user_id>", methods=["GET"])(get_user_by_id)
-users_bp.route("/<user_id>", methods=["PUT"])(update_user)
-users_bp.route("/<user_id>", methods=["DELETE"])(delete_user)
+@bp.route('/admin', methods=['GET'])
+@jwt_required()
+def admin():
+    current_user = get_jwt_identity()
+    if not current_user['is_admin']:
+        return jsonify({"msg": "Admin access required"}), 403
+    return jsonify({"msg": "Welcome admin"}), 200
